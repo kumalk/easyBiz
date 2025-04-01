@@ -26,6 +26,7 @@ function easyBiz_assets() {
 
     wp_enqueue_script( 'bootstrap-js', 'https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js', array( 'jquery' ), '5.3.0', true );
 
+    wp_enqueue_script('custom-js', get_template_directory_uri() . '/assets/js/script.js', array(), false, true);
 }
 add_action( 'wp_enqueue_scripts', 'easyBiz_assets' );
 
@@ -100,5 +101,77 @@ function mytheme_customize_css() {
 }
 add_action('wp_head', 'mytheme_customize_css');
 
+// adding slider function to theme using this following code part
+
+function theme_customize_register($wp_customize) {
+    // Section for Home Slider
+    $wp_customize->add_section('home_slider_section', array(
+        'title'    => __('Home Slider', 'your-theme'),
+        'priority' => 30,
+    ));
+
+    // Loop to create 5 sliders
+    for ($i = 1; $i <= 5; $i++) {
+        // Image setting
+        $wp_customize->add_setting("slider_image_$i", array(
+            'default'   => '',
+            'transport' => 'refresh',
+            'sanitize_callback' => 'esc_url_raw',
+        ));
+        $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, "slider_image_$i", array(
+            'label'    => __("Slide $i Image", 'your-theme'),
+            'section'  => 'home_slider_section',
+            'settings' => "slider_image_$i",
+        )));
+
+        // Title setting
+        $wp_customize->add_setting("slider_title_$i", array(
+            'default'   => '',
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+        $wp_customize->add_control("slider_title_$i", array(
+            'label'   => __("Slide $i Title", 'your-theme'),
+            'section' => 'home_slider_section',
+            'type'    => 'text',
+        ));
+
+        // Subtitle setting
+        $wp_customize->add_setting("slider_subtitle_$i", array(
+            'default'   => '',
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+        $wp_customize->add_control("slider_subtitle_$i", array(
+            'label'   => __("Slide $i Subtitle", 'your-theme'),
+            'section' => 'home_slider_section',
+            'type'    => 'text',
+        ));
+
+        // Button text setting
+        $wp_customize->add_setting("slider_button_text_$i", array(
+            'default'   => 'Learn More',
+            'sanitize_callback' => 'sanitize_text_field',
+        ));
+        $wp_customize->add_control("slider_button_text_$i", array(
+            'label'   => __("Slide $i Button Text", 'your-theme'),
+            'section' => 'home_slider_section',
+            'type'    => 'text',
+        ));
+
+        // Button link setting
+        $wp_customize->add_setting("slider_button_link_$i", array(
+            'default'   => '',
+            'sanitize_callback' => 'esc_url_raw',
+        ));
+        $wp_customize->add_control("slider_button_link_$i", array(
+            'label'   => __("Slide $i Button Link", 'your-theme'),
+            'section' => 'home_slider_section',
+            'type'    => 'url',
+        ));
+    }
+}
+add_action('customize_register', 'theme_customize_register');
+
 
 ?>
+
+
